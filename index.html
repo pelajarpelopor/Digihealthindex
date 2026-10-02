@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigiHealth Index - Platform Kesehatan Digital & Gaya Hidup</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white pb-20 md:pb-0">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div onclick="switchTab('landing')" class="flex items-center space-x-3 cursor-pointer group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-heart-pulse text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-blue-700 to-teal-600 bg-clip-text text-transparent">
+              DigiHealth
+            </span>
+            <span class="text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded-full">
+              Indeks
+            </span>
+          </div>
+          <p class="text-[10px] text-slate-400 font-medium">Platform Skrining & Edukasi Gaya Hidup Digital</p>
+        </div>
+      </div>
+
+      <!-- Desktop Navbar Items -->
+      <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+        <button onclick="switchTab('landing')" id="nav-landing" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-blue-700 bg-blue-50 border border-blue-200">
+          <i class="fa-solid fa-house mr-1.5 text-blue-600"></i> Beranda
+        </button>
+        <button onclick="switchTab('assessment')" id="nav-assessment" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+          <i class="fa-solid fa-[#2563eb] fa-sliders mr-1.5 text-slate-400"></i> Skrining Mandiri
+        </button>
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+          <i class="fa-solid fa-chart-pie mr-1.5 text-slate-400"></i> Dasbor Saya
+        </button>
+        <button onclick="switchTab('learn')" id="nav-learn" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+          <i class="fa-solid fa-book-open mr-1.5 text-slate-400"></i> Edukasi
+        </button>
+        <button onclick="switchTab('admin')" id="nav-admin" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+          <i class="fa-solid fa-lock mr-1.5 text-slate-400"></i> Pusat Peneliti
+        </button>
+      </nav>
+
+      <!-- Action Button -->
+      <div class="flex items-center space-x-3">
+        <button onclick="switchTab('assessment')" class="bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-md shadow-blue-500/15 flex items-center space-x-1.5 transition-all">
+          <span>Cek Indeks</span>
+          <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Notification Toast Container -->
+  <div id="toast" class="hidden fixed top-20 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 border border-slate-700">
+    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
+    <span id="toast-message" class="text-sm font-medium">Notifikasi</span>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+
+    <!-- SECTION 1: LANDING PAGE -->
+    <section id="tab-landing" class="tab-content space-y-16">
+      
+      <!-- Hero Banner -->
+      <div class="relative rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-8 md:p-12 overflow-hidden shadow-2xl">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div class="inline-flex items-center space-x-2 bg-blue-500/20 border border-blue-400/30 px-3.5 py-1.5 rounded-full text-xs font-medium text-blue-300">
+              <i class="fa-solid fa-flask text-teal-400"></i>
+              <span>Instrumen Penelitian Kesehatan Digital Remaja</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+              Pahami Keseimbangan <br class="hidden sm:inline">
+              <span class="bg-gradient-to-r from-blue-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
+                Kesehatan Digital Anda.
+              </span>
+            </h1>
+
+            <p class="text-base sm:text-lg text-slate-300 max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
+              Ukur waktu layar, durasi duduk, aktivitas fisik, dan pola tidur Anda — dapatkan skor DigiHealth Index dari 0 hingga 100 secara komprehensif.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+              <button onclick="switchTab('assessment')" class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white font-bold px-8 py-3.5 rounded-2xl shadow-xl shadow-blue-500/25 flex items-center justify-center space-x-2 text-base transition-all hover:scale-105">
+                <span>Mulai Skrining Mandiri</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button onclick="scrollToHowItWorks()" class="w-full sm:w-auto bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold px-6 py-3.5 rounded-2xl flex items-center justify-center space-x-2 text-base transition-all">
+                <i class="fa-solid fa-circle-info text-slate-400"></i>
+                <span>Cara Kerja Alat</span>
+              </button>
+            </div>
+
+            <div class="pt-4 flex items-center justify-center lg:justify-start space-x-2 text-xs text-slate-400">
+              <i class="fa-solid fa-shield-halved text-teal-400"></i>
+              <span>Instrumen edukasi skrining awal — aman & bersifat pribadi.</span>
+            </div>
+          </div>
+
+          <!-- Hero Widget Box -->
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="bg-slate-800/90 border border-slate-700/80 backdrop-blur-xl rounded-3xl p-6 sm:p-8 w-full max-w-sm shadow-2xl text-center space-y-6">
+              <div class="inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-semibold">
+                Sistem Indeks DigiHealth
+              </div>
+
+              <!-- Canvas Gauge -->
+              <div class="py-2 flex justify-center items-center flex-col relative">
+                <svg id="hero-gauge" width="180" height="180" class="transform -rotate-90">
+                  <circle cx="90" cy="90" r="75" stroke="#334155" stroke-width="14" fill="transparent"/>
+                  <circle id="hero-gauge-circle" cx="90" cy="90" r="75" stroke="#22C55E" stroke-width="14" stroke-dasharray="471" stroke-dashoffset="94" stroke-linecap="round" fill="transparent" class="transition-all duration-1000"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span id="hero-score-val" class="text-4xl font-extrabold text-white">80</span>
+                  <span class="text-xs font-semibold text-slate-400 uppercase mt-0.5">/ 100 Poin</span>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-lg font-bold text-white">Profil Seimbang Ideal</h3>
+                <p class="text-xs text-emerald-400 font-medium mt-1">Pola Digital Sehat & Seimbang</p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-left">
+                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/50 flex items-center space-x-2">
+                  <i class="fa-solid fa-mobile-screen text-blue-400 text-sm"></i>
+                  <div>
+                    <div class="text-[10px] text-slate-400">Layar</div>
+                    <div class="text-xs font-bold text-slate-200">70/100</div>
+                  </div>
+                </div>
+                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/50 flex items-center space-x-2">
+                  <i class="fa-solid fa-chair text-teal-400 text-sm"></i>
+                  <div>
+                    <div class="text-[10px] text-slate-400">Duduk</div>
+                    <div class="text-xs font-bold text-slate-200">85/100</div>
+                  </div>
+                </div>
+                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/50 flex items-center space-x-2">
+                  <i class="fa-solid fa-person-running text-amber-400 text-sm"></i>
+                  <div>
+                    <div class="text-[10px] text-slate-400">Aktivitas</div>
+                    <div class="text-xs font-bold text-slate-200">75/100</div>
+                  </div>
+                </div>
+                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/50 flex items-center space-x-2">
+                  <i class="fa-solid fa-moon text-indigo-400 text-sm"></i>
+                  <div>
+                    <div class="text-[10px] text-slate-400">Tidur</div>
+                    <div class="text-xs font-bold text-slate-200">90/100</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- How It Works Section -->
+      <div id="how-it-works" class="space-y-8">
+        <div class="text-center max-w-2xl mx-auto space-y-3">
+          <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 uppercase tracking-wider">
+            Kerangka Metodologi
+          </span>
+          <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+            Bagaimana DigiHealth Bekerja
+          </h2>
+          <p class="text-slate-600 text-sm">
+            Proses sistematis yang menerjemahkan kebiasaan 24 jam menjadi analisis keseimbangan digital yang presisi.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-3xl font-black text-slate-200">01</span>
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-500 to-blue-600 text-white flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-sliders"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">Input Kebiasaan</h3>
+            <p class="text-slate-600 text-xs leading-relaxed">Isi estimasi durasi penggunaan layar, duduk, olahraga, dan jam tidur harian Anda.</p>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-3xl font-black text-slate-200">02</span>
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-500 to-teal-600 text-white flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-rotate"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">Kalkulasi Sub-Skor</h3>
+            <p class="text-slate-600 text-xs leading-relaxed">Sistem mengubah data mentah menjadi 4 nilai sub-skor terstandarisasi (0–100).</p>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-3xl font-black text-slate-200">03</span>
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-600 text-white flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-award"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">Formulasi Indeks</h3>
+            <p class="text-slate-600 text-xs leading-relaxed">DigiHealth Index dihitung dengan pembobotan seimbang 25% untuk tiap domain.</p>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-3xl font-black text-slate-200">04</span>
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-emerald-600 text-white flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-chart-line"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">Rekomendasi Aksional</h3>
+            <p class="text-slate-600 text-xs leading-relaxed">Dapatkan visualisasi grafik radar dan panduan perbaikan gaya hidup praktis.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 2: SKRINING MANDIRI FORM -->
+    <section id="tab-assessment" class="tab-content hidden max-w-3xl mx-auto space-y-6">
+      
+      <div class="text-center space-y-2">
+        <span class="text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full border border-teal-200 uppercase tracking-wider">
+          Asesmen Kesehatan Siswa
+        </span>
+        <h2 class="text-3xl font-extrabold text-slate-900">
+          Skrining Mandiri DigiHealth
+        </h2>
+        <p class="text-slate-500 text-sm">
+          Isi informasi kebiasaan harian Anda secara jujur untuk memperoleh hasil kalkulasi yang akurat.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+        
+        <!-- Step Progress Header -->
+        <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center space-x-2 text-xs font-bold text-slate-600">
+            <span id="step-badge" class="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs">
+              Data Diri
+            </span>
+            <span id="step-title-header">Informasi Responden</span>
+          </div>
+
+          <div class="w-36 h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div id="step-progress-bar" class="h-full bg-gradient-to-r from-blue-600 to-teal-500 transition-all duration-500 w-[0%]"></div>
+          </div>
+        </div>
+
+        <div class="p-6 md:p-8">
+          
+          <!-- Step 0: User Info -->
+          <div id="form-step-0" class="form-step space-y-6">
+            <div class="flex items-center space-x-3 text-blue-600">
+              <i class="fa-solid fa-user-gear text-lg"></i>
+              <h3 class="text-lg font-bold text-slate-900">Informasi Responden / Siswa</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap / Inisial</label>
+                <input type="text" id="input-name" value="Andhika" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Usia (Tahun)</label>
+                <input type="number" id="input-age" value="16" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Kelas</label>
+                <select id="input-grade" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+                  <option value="Kelas 10 SMA">Kelas 10 SMA</option>
+                  <option value="Kelas 11 SMA" selected>Kelas 11 SMA</option>
+                  <option value="Kelas 12 SMA">Kelas 12 SMA</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Sekolah</label>
+                <input type="text" id="input-school" value="SMA Negeri 1" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 1: Screen Time -->
+          <div id="form-step-1" class="form-step hidden space-y-6">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-mobile-screen"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Langkah 1 — Layar</span>
+                <h3 class="text-xl font-extrabold text-slate-900">Penggunaan Layar Rekreasional</h3>
+              </div>
+            </div>
+
+            <p class="text-sm font-semibold text-slate-800">
+              "Berapa rata-rata durasi penggunaan layar untuk hiburan/medsos dalam sehari?"
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="selectScreenTime('Kurang dari 1 jam', 0.5, this)" class="screen-opt p-4 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between bg-white text-slate-700 border-slate-200 hover:border-blue-300">
+                <span>Kurang dari 1 jam</span>
+              </button>
+              <button onclick="selectScreenTime('1–2 jam', 1.5, this)" class="screen-opt p-4 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between bg-white text-slate-700 border-slate-200 hover:border-blue-300">
+                <span>1–2 jam</span>
+              </button>
+              <button onclick="selectScreenTime('2–4 jam', 3.5, this)" class="screen-opt p-4 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between bg-blue-600 text-white border-blue-600 shadow-lg">
+                <span>2–4 jam</span>
+                <i class="fa-solid fa-circle-check"></i>
+              </button>
+              <button onclick="selectScreenTime('4–6 jam', 5.0, this)" class="screen-opt p-4 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between bg-white text-slate-700 border-slate-200 hover:border-blue-300">
+                <span>4–6 jam</span>
+              </button>
+              <button onclick="selectScreenTime('Lebih dari 6 jam', 7.5, this)" class="screen-opt p-4 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between bg-white text-slate-700 border-slate-200 hover:border-blue-300">
+                <span>Lebih dari 6 jam</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Sedentary Hours -->
+          <div id="form-step-2" class="form-step hidden space-y-6">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-chair"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-teal-600 uppercase tracking-wider">Langkah 2 — Sedentari</span>
+                <h3 class="text-xl font-extrabold text-slate-900">Durasi Duduk / Berbaring Santai</h3>
+              </div>
+            </div>
+
+            <p class="text-sm font-semibold text-slate-800">
+              "Berapa total jam per hari yang Anda habiskan dalam posisi duduk atau santai saat tidak tidur?"
+            </p>
+
+            <div class="p-6 bg-slate-50 border border-slate-200 rounded-3xl text-center space-y-4">
+              <div class="text-4xl font-black text-slate-900">
+                <span id="sedentary-val-display">5.5</span> <span class="text-lg font-bold text-slate-500">Jam / Hari</span>
+              </div>
+
+              <input type="range" id="input-sedentary" min="1" max="14" step="0.5" value="5.5" oninput="updateSedentaryDisplay(this.value)" class="w-full accent-teal-600 cursor-pointer">
+
+              <div class="flex justify-between text-xs font-bold text-slate-400 px-1">
+                <span>1 Jam</span>
+                <span>7 Jam</span>
+                <span>14+ Jam</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Physical Activity -->
+          <div id="form-step-3" class="form-step hidden space-y-6">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-person-running"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Langkah 3 — Olahraga</span>
+                <h3 class="text-xl font-extrabold text-slate-900">Aktivitas Fisik & Olahraga</h3>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+                <label class="block text-xs font-bold text-slate-700 uppercase">Hari Aktif Olahraga / Minggu</label>
+                <div class="flex justify-between gap-1">
+                  <button onclick="setActDays(1, this)" class="act-day-btn w-9 h-9 rounded-xl font-bold text-xs bg-white text-slate-700 border">1</button>
+                  <button onclick="setActDays(2, this)" class="act-day-btn w-9 h-9 rounded-xl font-bold text-xs bg-white text-slate-700 border">2</button>
+                  <button onclick="setActDays(3, this)" class="act-day-btn w-9 h-9 rounded-xl font-bold text-xs bg-white text-slate-700 border">3</button>
+                  <button onclick="setActDays(4, this)" class="act-day-btn w-9 h-9 rounded-xl font-bold text-xs bg-white text-slate-700 border">4</button>
+                  <button onclick="setActDays(5, this)" class="act-day-btn w-9 h-9 rounded-xl font-bold text-xs bg-amber-500 text-white shadow-md">5</button>
+                  <button onclick="setActDays(6, this)" class="act-day-btn w-9 h-9 rounded-xl font-bold text-xs bg-white text-slate-700 border">6</button>
+                  <button onclick="setActDays(7, this)" class="act-day-btn w-9 h-9 rounded-xl font-bold text-xs bg-white text-slate-700 border">7</button>
+                </div>
+              </div>
+
+              <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+                <label class="block text-xs font-bold text-slate-700 uppercase">Durasi Per Sesi (Menit)</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <button onclick="setActMins(15, this)" class="act-min-btn py-2 rounded-xl font-bold text-xs bg-white text-slate-700 border">15 mnt</button>
+                  <button onclick="setActMins(30, this)" class="act-min-btn py-2 rounded-xl font-bold text-xs bg-white text-slate-700 border">30 mnt</button>
+                  <button onclick="setActMins(45, this)" class="act-min-btn py-2 rounded-xl font-bold text-xs bg-amber-500 text-white shadow-md">45 mnt</button>
+                  <button onclick="setActMins(60, this)" class="act-min-btn py-2 rounded-xl font-bold text-xs bg-white text-slate-700 border">60 mnt</button>
+                  <button onclick="setActMins(90, this)" class="act-min-btn py-2 rounded-xl font-bold text-xs bg-white text-slate-700 border">90 mnt</button>
+                  <button onclick="setActMins(120, this)" class="act-min-btn py-2 rounded-xl font-bold text-xs bg-white text-slate-700 border">120 mnt</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Sleep Hours -->
+          <div id="form-step-4" class="form-step hidden space-y-6">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-moon"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Langkah 4 — Tidur</span>
+                <h3 class="text-xl font-extrabold text-slate-900">Durasi Tidur Malam</h3>
+              </div>
+            </div>
+
+            <p class="text-sm font-semibold text-slate-800">
+              "Berapa jam rata-rata durasi tidur malam Anda setiap harinya?"
+            </p>
+
+            <div class="p-6 bg-slate-50 border border-slate-200 rounded-3xl text-center space-y-4">
+              <div class="text-4xl font-black text-slate-900">
+                <span id="sleep-val-display">7.5</span> <span class="text-lg font-bold text-slate-500">Jam / Malam</span>
+              </div>
+
+              <input type="range" id="input-sleep" min="4" max="12" step="0.5" value="7.5" oninput="updateSleepDisplay(this.value)" class="w-full accent-indigo-600 cursor-pointer">
+
+              <div class="flex justify-between text-xs font-bold text-slate-400 px-1">
+                <span>4 Jam</span>
+                <span>8 Jam (Ideal Remaja)</span>
+                <span>12 Jam</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Form Step Navigation -->
+        <div class="bg-slate-50 border-t border-slate-200 px-6 py-4 flex items-center justify-between">
+          <button id="btn-prev-step" onclick="prevStep()" disabled class="px-4 py-2.5 rounded-xl font-bold text-xs flex items-center space-x-1.5 bg-white border border-slate-300 text-slate-400 opacity-50 cursor-not-allowed">
+            <i class="fa-solid fa-chevron-left text-[10px]"></i>
+            <span>Kembali</span>
+          </button>
+
+          <button id="btn-next-step" onclick="nextStep()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-bold text-xs flex items-center space-x-1.5 shadow-md shadow-blue-500/20">
+            <span>Langkah Selanjutnya</span>
+            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: DASBOR HASIL SISWA -->
+    <section id="tab-dashboard" class="tab-content hidden space-y-8">
+      
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded-md">
+              HASIL SKRINING
+            </span>
+            <span id="dash-date-display" class="text-xs text-slate-400">Tanggal Asesmen: Hari Ini</span>
+          </div>
+          <h2 class="text-2xl font-black text-slate-900 mt-1">
+            Halo, <span id="dash-user-name">Andhika</span> 👋
+          </h2>
+          <p class="text-xs text-slate-500">
+            Berikut adalah profil gambaran gaya hidup digital 24 jam Anda berdasarkan kalkulasi skor.
+          </p>
+        </div>
+
+        <button onclick="switchTab('assessment')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-200 transition-all flex items-center space-x-1.5">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>Ulangi Skrining</span>
+        </button>
+      </div>
+
+      <!-- Score Gauge & Subscores -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <div class="lg:col-span-7 bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-lg flex flex-col justify-between space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div>
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Hasil Indeks Gabungan</span>
+              <h3 class="text-xl font-extrabold text-slate-900">Indeks DigiHealth Anda</h3>
+            </div>
+            <span id="dash-category-badge" class="px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-700 border border-emerald-300">
+              Pola Digital Sehat
+            </span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-around gap-6 py-2">
+            <!-- Dynamic Main Gauge -->
+            <div class="relative flex items-center justify-center flex-col">
+              <svg width="190" height="190" class="transform -rotate-90">
+                <circle cx="95" cy="95" r="80" stroke="#E2E8F0" stroke-width="14" fill="transparent"/>
+                <circle id="dash-main-circle" cx="95" cy="95" r="80" stroke="#22C55E" stroke-width="14" stroke-dasharray="502" stroke-dashoffset="100" stroke-linecap="round" fill="transparent" class="transition-all duration-1000"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span id="dash-dhi-score" class="text-4xl font-extrabold text-slate-900">82</span>
+                <span class="text-xs font-semibold text-slate-500 uppercase mt-0.5">/ 100 Poin</span>
+              </div>
+            </div>
+
+            <div class="space-y-3 max-w-xs text-center sm:text-left">
+              <h4 class="font-bold text-slate-800 text-base">Evaluasi Kebiasaan</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Pola harian Anda menunjukkan keseimbangan yang sangat baik antara penggunaan gadget, olahraga, waktu duduk, dan durasi istirahat malam.
+              </p>
+              <div class="text-[11px] text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200 font-medium">
+                <i class="fa-solid fa-circle-exclamation mr-1"></i> Digunakan untuk edukasi dan kesadaran gaya hidup mandiri.
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 Domain Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <div class="bg-blue-50/60 border border-blue-100 p-3 rounded-2xl text-center">
+              <i class="fa-solid fa-mobile-screen text-blue-600 text-sm mb-1"></i>
+              <div class="text-[10px] font-bold text-blue-900">Waktu Layar</div>
+              <div id="dash-sts-val" class="text-base font-black text-slate-900">70</div>
+            </div>
+            <div class="bg-teal-50/60 border border-teal-100 p-3 rounded-2xl text-center">
+              <i class="fa-solid fa-chair text-teal-600 text-sm mb-1"></i>
+              <div class="text-[10px] font-bold text-teal-900">Sedentari</div>
+              <div id="dash-sbs-val" class="text-base font-black text-slate-900">85</div>
+            </div>
+            <div class="bg-amber-50/60 border border-amber-100 p-3 rounded-2xl text-center">
+              <i class="fa-solid fa-person-running text-amber-600 text-sm mb-1"></i>
+              <div class="text-[10px] font-bold text-amber-900">Aktivitas</div>
+              <div id="dash-pas-val" class="text-base font-black text-slate-900">88</div>
+            </div>
+            <div class="bg-indigo-50/60 border border-indigo-100 p-3 rounded-2xl text-center">
+              <i class="fa-solid fa-moon text-indigo-600 text-sm mb-1"></i>
+              <div class="text-[10px] font-bold text-indigo-900">Tidur</div>
+              <div id="dash-ss-val" class="text-base font-black text-slate-900">92</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Dynamic SVG Radar Chart -->
+        <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200 shadow-lg flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-slate-900">Radar Keseimbangan Domain</h3>
+              <span class="text-xs text-slate-400 font-medium">Visualisasi 4 Sumbu</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">Keseimbangan ideal dicapai jika area polygon melebar rata.</p>
+          </div>
+
+          <div class="flex-1 flex items-center justify-center py-2">
+            <svg id="radar-svg" width="240" height="240" class="overflow-visible">
+              <!-- Radar Background Polygons & Lines dynamically rendered by JS -->
+            </svg>
+          </div>
+
+          <div class="text-[11px] text-center text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+            Proporsi 25% untuk masing-masing domain aktivitas harian.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Personalized Recommendations -->
+      <div class="space-y-4">
+        <div>
+          <span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 uppercase tracking-wider">
+            Rekomendasi Terpersonalisasi
+          </span>
+          <h3 class="text-2xl font-extrabold text-slate-900 mt-1">
+            Langkah Perbaikan Kebiasaan Harian
+          </h3>
+        </div>
+
+        <div id="recommendations-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Rendered dynamically by JS -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 4: HALAMAN EDUKASI -->
+    <section id="tab-learn" class="tab-content hidden space-y-10">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-3">
+        <span class="text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full border border-teal-200 uppercase tracking-wider">
+          Edukasi Kesehatan Digital
+        </span>
+        <h2 class="text-3xl font-extrabold text-slate-900">
+          Prinsip Gerak & Istirahat 24 Jam
+        </h2>
+        <p class="text-slate-600 text-sm">
+          Dalam rentang waktu 24 jam, keempat domain ini saling memengaruhi kesehatan fisik dan mental remaja.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 hover:border-blue-300 transition-all">
+          <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-mobile-screen"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">📱 Penggunaan Layar Rekreasional</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Penggunaan gadget untuk sosial media dan video hiburan secara berlebihan menjelang tidur menurunkan kadar hormon melatonin yang penting untuk kualitas tidur nyenyak.
+          </p>
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 font-medium">
+            💡 <strong>Tips:</strong> Matikan layar 30-60 menit sebelum tidur dan terapkan aturan istirahat mata 20-20-20.
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 hover:border-teal-300 transition-all">
+          <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-chair"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">🪑 Perilaku Sedentari (Duduk Lama)</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Duduk terus-menerus tanpa jeda saat belajar atau main game dapat memperlambat sirkulasi darah dan menyebabkan kelelahan otot postur tubuh.
+          </p>
+          <div class="p-3 bg-teal-50 border border-teal-200 rounded-xl text-xs text-teal-900 font-medium">
+            💡 <strong>Tips:</strong> Selipkan berdiri atau berjalan singkat 2 menit setiap 45 menit duduk.
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 hover:border-amber-300 transition-all">
+          <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-person-running"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">🏃 Aktivitas Fisik & Olahraga</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Latihan fisik tingkat sedang hingga berat meningkatkan kapasitas jantung, paru-paru, serta konsentrasi daya ingat saat belajar di sekolah.
+          </p>
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-medium">
+            💡 <strong>Tips:</strong> Targetkan minimal 60 menit aktivitas fisik sedang setiap harinya.
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 hover:border-indigo-300 transition-all">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-moon"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">😴 Istirahat Tidur Cukup</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Tidur malam yang berkualias adalah waktu bagi tubuh melakukan pemulihan sel otak dan imunitas. Usia remaja membutuhkan 8–10 jam tidur.
+          </p>
+          <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-xs text-indigo-900 font-medium">
+            💡 <strong>Tips:</strong> Pertahankan jam tidur dan jam bangun yang konsisten setiap harinya.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 5: PUSAT PENELITI (ADMIN PANEL) -->
+    <section id="tab-admin" class="tab-content hidden space-y-8">
+      
+      <!-- Password Lock Screen -->
+      <div id="admin-lock-screen" class="max-w-md mx-auto my-12 bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-slate-900 text-teal-400 flex items-center justify-center mx-auto shadow-lg text-2xl">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-extrabold text-slate-900">Akses Pusat Peneliti</h3>
+          <p class="text-xs text-slate-500 mt-1">Area khusus untuk peneliti dan pengelola data instrumen.</p>
+        </div>
+
+        <div class="space-y-4 text-left">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Kata Sandi Akses</label>
+            <input type="password" id="admin-pass-input" placeholder="Masukkan kata sandi..." class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm font-mono">
+            <p id="admin-pass-error" class="hidden text-xs text-rose-600 font-semibold mt-1.5">Kata sandi salah. Silakan coba lagi.</p>
+          </div>
+
+          <button onclick="unlockAdmin()" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold text-xs py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-key"></i>
+            <span>Buka Akses Konsol</span>
+          </button>
+        </div>
+
+        <div class="pt-2 text-[11px] text-slate-400 border-t border-slate-100">
+          Kata sandi akses: <code class="bg-slate-100 px-2 py-0.5 rounded text-slate-700 font-mono font-bold">inventornetco</code>
+        </div>
+      </div>
+
+      <!-- Unlocked Admin Dashboard -->
+      <div id="admin-content" class="hidden space-y-8">
+        
+        <div class="bg-slate-900 rounded-3xl p-6 md:p-8 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-teal-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700 uppercase tracking-wider">
+                Konsol Peneliti
+              </span>
+              <span class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-semibold">
+                Akses Aktif
+              </span>
+            </div>
+            <h2 class="text-2xl font-black text-white mt-2">
+              Rekapitulasi Data Responden
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Database hasil skrining dari sampel siswa.</p>
+          </div>
+
+          <div class="flex items-center space-x-3">
+            <button onclick="exportCSV()" class="bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white text-xs font-extrabold px-5 py-3 rounded-2xl shadow-lg flex items-center space-x-2 transition-all">
+              <i class="fa-solid fa-download"></i>
+              <span>Ekspor Data (.CSV)</span>
+            </button>
+            <button onclick="lockAdmin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-4 py-3 rounded-2xl border border-slate-700">
+              Kunci Kembali
+            </button>
+          </div>
+        </div>
+
+        <!-- Table Data -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+            <h3 class="font-extrabold text-slate-900 text-base">Tabel Data Responden</h3>
+            <span id="table-count" class="text-xs text-slate-400 font-medium">0 Data</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-[10px] border-b border-slate-200">
+                <tr>
+                  <th class="p-4">ID</th>
+                  <th class="p-4">Nama</th>
+                  <th class="p-4">Kelas</th>
+                  <th class="p-4">STS</th>
+                  <th class="p-4">SBS</th>
+                  <th class="p-4">PAS</th>
+                  <th class="p-4">SS</th>
+                  <th class="p-4 text-right">Indeks DHI</th>
+                </tr>
+              </thead>
+              <tbody id="respondents-table-body" class="divide-y divide-slate-100 font-medium">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 mt-12 py-8 text-center px-4">
+    <div class="max-w-4xl mx-auto space-y-4">
+      <div class="inline-flex items-center space-x-2 bg-amber-50 text-amber-800 border border-amber-200 px-3.5 py-1.5 rounded-full text-xs font-semibold">
+        <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+        <span>Pernyataan Prototipe Edukasi</span>
+      </div>
+
+      <p class="text-xs text-slate-500 leading-relaxed max-w-2xl mx-auto">
+        DigiHealth Index dirancang khusus untuk kesadaran mandiri dan edukasi pola hidup digital seimbang. Indeks ini bukan diagnosis medis klinis.
+      </p>
+
+      <div class="text-[11px] text-slate-400 font-medium">
+        © 2026 Tim Penelitian DigiHealth Index — Proyek Kesehatan Digital Remaja
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-50 flex items-center justify-around py-2 px-1">
+    <button onclick="switchTab('landing')" class="mobile-nav-btn flex flex-col items-center justify-center space-y-0.5 px-3 py-1 text-[10px] font-bold text-blue-600">
+      <i class="fa-solid fa-house text-base"></i>
+      <span>Beranda</span>
+    </button>
+    <button onclick="switchTab('assessment')" class="mobile-nav-btn flex flex-col items-center justify-center space-y-0.5 px-3 py-1 text-[10px] font-bold text-slate-400">
+      <i class="fa-solid fa-sliders text-base"></i>
+      <span>Skrining</span>
+    </button>
+    <button onclick="switchTab('dashboard')" class="mobile-nav-btn flex flex-col items-center justify-center space-y-0.5 px-3 py-1 text-[10px] font-bold text-slate-400">
+      <i class="fa-solid fa-chart-pie text-base"></i>
+      <span>Dasbor</span>
+    </button>
+    <button onclick="switchTab('learn')" class="mobile-nav-btn flex flex-col items-center justify-center space-y-0.5 px-3 py-1 text-[10px] font-bold text-slate-400">
+      <i class="fa-solid fa-book-open text-base"></i>
+      <span>Edukasi</span>
+    </button>
+    <button onclick="switchTab('admin')" class="mobile-nav-btn flex flex-col items-center justify-center space-y-0.5 px-3 py-1 text-[10px] font-bold text-slate-400">
+      <i class="fa-solid fa-lock text-base"></i>
+      <span>Admin</span>
+    </button>
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    // App State
+    let currentStep = 0;
+    let userInputs = {
+      name: 'Andhika',
+      age: 16,
+      grade: 'Kelas 11 SMA',
+      school: 'SMA Negeri 1',
+      screenCat: '2–4 jam',
+      screenHours: 3.5,
+      sedentaryHours: 5.5,
+      actDays: 5,
+      actMins: 45,
+      sleepHours: 7.5
+    };
+
+    let respondentsData = [
+      { id: 'RESP-1001', name: 'Andhika', grade: '11', sts: 70, sbs: 85, pas: 88, ss: 92, dhi: 84 },
+      { id: 'RESP-1002', name: 'Siti A.', grade: '12', sts: 45, sbs: 65, pas: 60, ss: 78, dhi: 62 },
+      { id: 'RESP-1003', name: 'Budi P.', grade: '10', sts: 85, sbs: 85, pas: 95, ss: 100, dhi: 91 },
+      { id: 'RESP-1004', name: 'Dewi R.', grade: '11', sts: 20, sbs: 40, pas: 40, ss: 92, dhi: 48 },
+    ];
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+      // Update Nav Buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-blue-700', 'bg-blue-50', 'border', 'border-blue-200');
+        btn.classList.add('text-slate-600');
+      });
+      const activeNav = document.getElementById('nav-' + tabId);
+      if(activeNav) {
+        activeNav.classList.add('text-blue-700', 'bg-blue-50', 'border', 'border-blue-200');
+        activeNav.classList.remove('text-slate-600');
+      }
+
+      if(tabId === 'dashboard') {
+        renderDashboard();
+      } else if(tabId === 'admin') {
+        renderAdminTable();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToHowItWorks() {
+      document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function updateStepUI() {
+      // Hide all steps
+      for(let i=0; i<=4; i++) {
+        document.getElementById(`form-step-${i}`).classList.add('hidden');
+      }
+      // Show current step
+      document.getElementById(`form-step-${currentStep}`).classList.remove('hidden');
+
+      // Update Header
+      const titles = ['Informasi Responden', 'Waktu Layar Hiburan', 'Perilaku Sedentari (Duduk)', 'Aktivitas Fisik', 'Pola Tidur Malam'];
+      document.getElementById('step-title-header').innerText = titles[currentStep];
+      document.getElementById('step-badge').innerText = currentStep === 0 ? 'Data Diri' : `Langkah ${currentStep} dari 4`;
+      document.getElementById('step-progress-bar').style.width = `${(currentStep / 4) * 100}%`;
+
+      // Update Prev Button
+      const btnPrev = document.getElementById('btn-prev-step');
+      if(currentStep === 0) {
+        btnPrev.disabled = true;
+        btnPrev.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        btnPrev.disabled = false;
+        btnPrev.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+
+      // Update Next Button Text
+      const btnNext = document.getElementById('btn-next-step');
+      if(currentStep === 4) {
+        btnNext.innerHTML = `<span>Hitung Indeks DigiHealth</span> <i class="fa-solid fa-wand-magic-sparkles"></i>`;
+      } else {
+        btnNext.innerHTML = `<span>Langkah Selanjutnya</span> <i class="fa-solid fa-chevron-right text-[10px]"></i>`;
+      }
+    }
+
+    function nextStep() {
+      if(currentStep === 0) {
+        userInputs.name = document.getElementById('input-name').value || 'Siswa';
+        userInputs.age = document.getElementById('input-age').value || 16;
+        userInputs.grade = document.getElementById('input-grade').value;
+        userInputs.school = document.getElementById('input-school').value;
+      }
+
+      if(currentStep < 4) {
+        currentStep++;
+        updateStepUI();
+      } else {
+        // Complete Assessment
+        calculateAndSave();
+        switchTab('dashboard');
+        showToast('🎉 Asesmen Selesai! Hasil Indeks Anda telah siap.');
+      }
+    }
+
+    function prevStep() {
+      if(currentStep > 0) {
+        currentStep--;
+        updateStepUI();
+      }
+    }
+
+    function selectScreenTime(cat, hrs, btn) {
+      userInputs.screenCat = cat;
+      userInputs.screenHours = hrs;
+      document.querySelectorAll('.screen-opt').forEach(b => {
+        b.className = 'screen-opt p-4 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between bg-white text-slate-700 border-slate-200 hover:border-blue-300';
+        b.innerHTML = `<span>${b.querySelector('span').innerText}</span>`;
+      });
+      btn.className = 'screen-opt p-4 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between bg-blue-600 text-white border-blue-600 shadow-lg';
+      btn.innerHTML = `<span>${cat}</span> <i class="fa-solid fa-circle-check"></i>`;
+    }
+
+    function updateSedentaryDisplay(val) {
+      userInputs.sedentaryHours = parseFloat(val);
+      document.getElementById('sedentary-val-display').innerText = val;
+    }
+
+    function setActDays(days, btn) {
+      userInputs.actDays = days;
+      document.querySelectorAll('.act-day-btn').forEach(b => {
+        b.className = 'act-day-btn w-9 h-9 rounded-xl font-bold text-xs bg-white text-slate-700 border';
+      });
+      btn.className = 'act-day-btn w-9 h-9 rounded-xl font-bold text-xs bg-amber-500 text-white shadow-md';
+    }
+
+    function setActMins(mins, btn) {
+      userInputs.actMins = mins;
+      document.querySelectorAll('.act-min-btn').forEach(b => {
+        b.className = 'act-min-btn py-2 rounded-xl font-bold text-xs bg-white text-slate-700 border';
+      });
+      btn.className = 'act-min-btn py-2 rounded-xl font-bold text-xs bg-amber-500 text-white shadow-md';
+    }
+
+    function updateSleepDisplay(val) {
+      userInputs.sleepHours = parseFloat(val);
+      document.getElementById('sleep-val-display').innerText = val;
+    }
+
+    function calculateScores() {
+      // STS: Screen Time Score
+      let sts = 70;
+      if (userInputs.screenHours < 1) sts = 100;
+      else if (userInputs.screenHours <= 2) sts = 85;
+      else if (userInputs.screenHours <= 4) sts = 70;
+      else if (userInputs.screenHours <= 6) sts = 45;
+      else sts = 20;
+
+      // SBS: Sedentary Behaviour Score
+      let sbs = 100;
+      if (userInputs.sedentaryHours <= 4) sbs = 100;
+      else if (userInputs.sedentaryHours <= 6) sbs = 85;
+      else if (userInputs.sedentaryHours <= 8) sbs = 65;
+      else if (userInputs.sedentaryHours <= 10) sbs = 40;
+      else sbs = 20;
+
+      // PAS: Physical Activity Score
+      const totalMins = userInputs.actDays * userInputs.actMins;
+      let pas = Math.min(100, Math.round((totalMins / 300) * 100));
+
+      // SS: Sleep Score
+      let ss = 85;
+      if (userInputs.sleepHours >= 8 && userInputs.sleepHours <= 10) ss = 100;
+      else if (userInputs.sleepHours >= 7) ss = 88;
+      else if (userInputs.sleepHours >= 6) ss = 68;
+      else ss = 50;
+
+      // DHI Formula = 0.25*STS + 0.25*SBS + 0.25*PAS + 0.25*SS
+      const dhi = Math.round(0.25 * sts + 0.25 * sbs + 0.25 * pas + 0.25 * ss);
+
+      return { dhi, sts, sbs, pas, ss };
+    }
+
+    function calculateAndSave() {
+      const scores = calculateScores();
+      const newResp = {
+        id: 'RESP-' + Math.floor(1000 + Math.random() * 9000),
+        name: userInputs.name,
+        grade: userInputs.grade,
+        sts: scores.sts,
+        sbs: scores.sbs,
+        pas: scores.pas,
+        ss: scores.ss,
+        dhi: scores.dhi
+      };
+      respondentsData.unshift(newResp);
+    }
+
+    function renderDashboard() {
+      const scores = calculateScores();
+
+      document.getElementById('dash-user-name').innerText = userInputs.name;
+      document.getElementById('dash-dhi-score').innerText = scores.dhi;
+      document.getElementById('dash-sts-val').innerText = scores.sts;
+      document.getElementById('dash-sbs-val').innerText = scores.sbs;
+      document.getElementById('dash-pas-val').innerText = scores.pas;
+      document.getElementById('dash-ss-val').innerText = scores.ss;
+
+      // Circle Gauge Offset (circumference = 502)
+      const offset = 502 - (scores.dhi / 100) * 502;
+      document.getElementById('dash-main-circle').style.strokeDashoffset = offset;
+
+      // Render Dynamic Radar SVG
+      renderRadar(scores);
+
+      // Render Recommendations
+      renderRecommendations(scores);
+    }
+
+    function renderRadar(scores) {
+      const svg = document.getElementById('radar-svg');
+      const center = 120, r = 80;
+      const points = [
+        { name: 'Layar', score: scores.sts, angle: -Math.PI / 2 },
+        { name: 'Duduk', score: scores.sbs, angle: 0 },
+        { name: 'Aktivitas', score: scores.pas, angle: Math.PI / 2 },
+        { name: 'Tidur', score: scores.ss, angle: Math.PI }
+      ];
+
+      function getCoords(score, angle) {
+        const dist = (score / 100) * r;
+        return { x: center + dist * Math.cos(angle), y: center + dist * Math.sin(angle) };
+      }
+
+      let polyPoints = points.map(p => {
+        const c = getCoords(p.score, p.angle);
+        return `${c.x},${c.y}`;
+      }).join(' ');
+
+      let svgHTML = `
+        <!-- Circles -->
+        <circle cx="${center}" cy="${center}" r="${r * 0.25}" stroke="#e2e8f0" stroke-dasharray="3 3" fill="none" />
+        <circle cx="${center}" cy="${center}" r="${r * 0.5}" stroke="#e2e8f0" stroke-dasharray="3 3" fill="none" />
+        <circle cx="${center}" cy="${center}" r="${r * 0.75}" stroke="#e2e8f0" stroke-dasharray="3 3" fill="none" />
+        <circle cx="${center}" cy="${center}" r="${r}" stroke="#cbd5e1" stroke-width="1.5" fill="none" />
+
+        <!-- Axis Lines -->
+        ${points.map(p => {
+          const outer = getCoords(100, p.angle);
+          return `<line x1="${center}" y1="${center}" x2="${outer.x}" y2="${outer.y}" stroke="#cbd5e1" stroke-width="1.5" />`;
+        }).join('')}
+
+        <!-- Radar Polygon -->
+        <polygon points="${polyPoints}" fill="rgba(37, 99, 235, 0.25)" stroke="#2563eb" stroke-width="2.5" />
+
+        <!-- Points -->
+        ${points.map(p => {
+          const c = getCoords(p.score, p.angle);
+          return `<circle cx="${c.x}" cy="${c.y}" r="5" fill="#1d4ed8" stroke="#ffffff" stroke-width="2" />`;
+        }).join('')}
+
+        <!-- Labels -->
+        <text x="${center}" y="${center - r - 12}" text-anchor="middle" class="text-[11px] font-bold fill-slate-700">📱 Layar (${scores.sts})</text>
+        <text x="${center + r + 12}" y="${center + 4}" text-anchor="start" class="text-[11px] font-bold fill-slate-700">🪑 Duduk (${scores.sbs})</text>
+        <text x="${center}" y="${center + r + 18}" text-anchor="middle" class="text-[11px] font-bold fill-slate-700">🏃 Aktivitas (${scores.pas})</text>
+        <text x="${center - r - 12}" y="${center + 4}" text-anchor="end" class="text-[11px] font-bold fill-slate-700">😴 Tidur (${scores.ss})</text>
+      `;
+
+      svg.innerHTML = svgHTML;
+    }
+
+    function renderRecommendations(scores) {
+      const container = document.getElementById('recommendations-container');
+      const recs = [
+        {
+          title: 'Manajemen Waktu Layar',
+          desc: scores.sts < 80 ? 'Buat batas jeda 30 menit bebas HP sebelum tidur malam untuk menjaga ritme otak.' : 'Penggunaan layar Anda terkontrol dengan baik. Tetap gunakan aturan 20-20-20.',
+          icon: 'fa-mobile-screen', color: 'text-blue-600 bg-blue-50 border-blue-200'
+        },
+        {
+          title: 'Postur & Micro-Break',
+          desc: scores.sbs < 80 ? 'Selipkan berdiri dan berjalan santai 2 menit setiap 45 menit belajar di meja.' : 'Sangat baik! Anda rajin diselingi gerak saat beraktivitas harian.',
+          icon: 'fa-chair', color: 'text-teal-600 bg-teal-50 border-teal-200'
+        },
+        {
+          title: 'Peningkatan Rutin Olahraga',
+          desc: scores.pas < 80 ? 'Tambahkan jalan cepat atau latihan fisik favorit 20 menit per hari.' : 'Tingkat aktivitas fisik Anda sangat bugar! Pertahankan.',
+          icon: 'fa-person-running', color: 'text-amber-600 bg-amber-50 border-amber-200'
+        },
+        {
+          title: 'Kualitas Istirahat Tidur',
+          desc: scores.ss < 80 ? 'Usahakan tidur konsisten 8 jam malam dan matikan lampu kamar.' : 'Durasi tidur Anda ideal untuk proses tumbuh kembang dan daya ingat.',
+          icon: 'fa-moon', color: 'text-indigo-600 bg-indigo-50 border-indigo-200'
+        }
+      ];
+
+      container.innerHTML = recs.map(r => `
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+          <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-xl text-xs font-bold border ${r.color}">
+            <i class="fa-solid ${r.icon}"></i>
+            <span>${r.title}</span>
+          </span>
+          <p class="text-xs text-slate-600 leading-relaxed">${r.desc}</p>
+        </div>
+      `).join('');
+    }
+
+    function unlockAdmin() {
+      const pass = document.getElementById('admin-pass-input').value;
+      if(pass === 'inventornetco') {
+        document.getElementById('admin-lock-screen').classList.add('hidden');
+        document.getElementById('admin-content').classList.remove('hidden');
+        renderAdminTable();
+        showToast('🔓 Akses Pusat Peneliti Berhasil!');
+      } else {
+        document.getElementById('admin-pass-error').classList.remove('hidden');
+      }
+    }
+
+    function lockAdmin() {
+      document.getElementById('admin-lock-screen').classList.remove('hidden');
+      document.getElementById('admin-content').classList.add('hidden');
+    }
+
+    function renderAdminTable() {
+      const tbody = document.getElementById('respondents-table-body');
+      document.getElementById('table-count').innerText = `${respondentsData.length} Data`;
+
+      tbody.innerHTML = respondentsData.map(r => `
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="p-4 font-mono font-bold text-slate-500">${r.id}</td>
+          <td class="p-4 font-bold text-slate-900">${r.name}</td>
+          <td class="p-4">${r.grade}</td>
+          <td class="p-4 text-blue-600 font-bold">${r.sts}</td>
+          <td class="p-4 text-teal-600 font-bold">${r.sbs}</td>
+          <td class="p-4 text-amber-600 font-bold">${r.pas}</td>
+          <td class="p-4 text-indigo-600 font-bold">${r.ss}</td>
+          <td class="p-4 text-right">
+            <span class="inline-block px-2.5 py-1 rounded-full font-black text-xs ${r.dhi >= 80 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+              ${r.dhi} / 100
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function exportCSV() {
+      const headers = ['ID', 'Nama', 'Kelas', 'STS', 'SBS', 'PAS', 'SS', 'DHI_Score'];
+      const rows = respondentsData.map(r => [r.id, `"${r.name}"`, `"${r.grade}"`, r.sts, r.sbs, r.pas, r.ss, r.dhi]);
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'DigiHealth_Research_Data.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('📥 Berkas CSV berhasil diunduh.');
+    }
+
+    // Initialize UI on window load
+    window.onload = function() {
+      renderDashboard();
+    };
+  </script>
+</body>
+</html>
